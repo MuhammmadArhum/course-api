@@ -1,0 +1,20 @@
+{
+  "users": [],
+  "categories": [
+    {
+      "_id": "64b7f0f0f0f0f0f0f0f00001",
+      "name": "Web Development",
+      "description": "Frontend and backend development courses",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "_id": "64b7f0f0f0f0f0f0f0f00002",
+      "name": "Mobile Development",
+      "description": "iOS and Android app development",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ],
+  "courses": []
+}

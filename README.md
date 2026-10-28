@@ -1,16 +1,16 @@
 # Course API – Express.js + Modular MVC
 
 REST API with Authentication, Category CRUD and Course CRUD.
-Stack: Express 4, MongoDB (Mongoose), JWT, bcryptjs.
+Stack: Express 4, JWT, bcryptjs, In-Memory / JSON File Store (No Database installation required).
 
 ## Folder structure
 
 ```
-server.js               # entry point (connects DB, starts server)
+server.js               # entry point (starts server)
 src/
   app.js                # express app, routes, 404 + error middleware
-  config/db.js          # MongoDB connection
-  models/               # M  – User, Category, Course schemas
+  data/                 # database-free data store (in-memory + db.json)
+  models/               # M  – User, Category, Course models
   controllers/          # C  – business logic
   routes/               # V/R – URL -> controller mapping
   middleware/           # auth (JWT), notFound (404), errorHandler
@@ -22,12 +22,10 @@ src/
 ```bash
 npm install
 cp .env.example .env      # Windows: copy .env.example .env
-# edit .env if needed (MONGO_URI, JWT_SECRET)
 npm start                 # or: npm run dev
 ```
 
-MongoDB: install MongoDB Community locally (default URI works) **or** create a free
-MongoDB Atlas cluster and paste its connection string into `MONGO_URI`.
+> **Note:** No external database (MongoDB/SQL) is required. The API runs completely standalone using a built-in JSON / in-memory store.
 
 ## Endpoints
 

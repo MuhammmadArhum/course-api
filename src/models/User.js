@@ -1,24 +1,63 @@
-const mongoose = require('mongoose');
+const { store, saveData, generateId } = require('../data/store');
+const AppError = require('../utils/AppError');
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: [true, 'Name is required'], trim: true },
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      lowercase: true,
-      trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters'],
-      select: false,
-    },
-  },
-  { timestamps: true }
-);
+class User {
+  static async create({ name, email, password }) {
+    if (!name || !name.trim()) {
+      throw new AppError('Name is required', 400);
+    }
+    if (!email || !email.trim()) {
+      throw new AppError('Email is required', 400);
+    }
 
-module.exports = mongoose.model('User', userSchema);
+    const trimmedEmail = email.toLowerCase().trim();
+    if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
+      throw new AppError('Please provide a valid email', 400);
+    }
+
+    const duplicate = store.users.find((u) => u.email === trimmedEmail);
+    if (duplicate) {
+      throw new AppError('Email already registered', 400);
+    }
+
+    const newUser = {
+      _id: generateId(),
+      name: name.trim(),
+      email: trimmedEmail,
+      password,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    store.users.push(newUser);
+    saveData();
+    return { ...newUser };
+  }
+
+  static findOne(query) {
+    const user = store.users.find((u) => {
+      for (const [key, val] of Object.entries(query)) {
+        if (u[key] !== val) return false;
+      }
+      return true;
+    });
+
+    const result = user ? { ...user } : null;
+
+    return {
+      select() {
+        return Promise.resolve(result);
+      },
+      then(resolve, reject) {
+        return Promise.resolve(result).then(resolve, reject);
+      },
+    };
+  }
+
+  static async findById(id) {
+    const user = store.users.find((u) => u._id === id);
+    return user ? { ...user } : null;
+  }
+}
+
+module.exports = User;

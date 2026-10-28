@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { isValidId } = require('../data/store');
 const Course = require('../models/Course');
 const Category = require('../models/Category');
 const AppError = require('../utils/AppError');
@@ -6,7 +6,7 @@ const asyncHandler = require('../utils/asyncHandler');
 
 // Make sure the supplied category id is valid and exists
 const assertCategory = async (id) => {
-  if (!mongoose.isValidObjectId(id)) throw new AppError('Category not found', 404);
+  if (!isValidId(id)) throw new AppError('Category not found', 404);
   const found = await Category.exists({ _id: id });
   if (!found) throw new AppError('Category not found', 404);
 };
